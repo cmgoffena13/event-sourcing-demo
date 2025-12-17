@@ -53,8 +53,6 @@ class GlobalConfig(BaseConfig):
     OPEN_TELEMETRY_LOG_ENDPOINT: Optional[HttpUrl] = None
     OPEN_TELEMETRY_AUTHORIZATION_TOKEN: Optional[str] = None
     OPEN_TELEMETRY_FLAG: bool = False
-    PERSISTENCE_MODULE: str = "eventsourcing_sqlalchemy"
-    SQLALCHEMY_URL: Optional[str] = None
 
     # AWS Secrets Manager settings
     AWS_ACCESS_KEY_ID: Optional[str] = None
