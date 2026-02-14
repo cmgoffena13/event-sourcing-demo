@@ -70,10 +70,13 @@ class GlobalConfig(BaseConfig):
     GOOGLE_APPLICATION_CREDENTIALS: Optional[str] = None
     GOOGLE_CLOUD_PROJECT: Optional[str] = None
 
+    DATABASE_URL: Optional[str] = None
+
 
 class DevConfig(GlobalConfig):
     LOG_LEVEL: LogLevel = "DEBUG"  # Overrides the global LOG_LEVEL
     OTEL_PYTHON_LOG_CORRELATION: bool = False
+    DATABASE_URL: str = "sqlite:///./db.sqlite3"
 
     model_config = SettingsConfigDict(env_prefix="DEV_")
 
