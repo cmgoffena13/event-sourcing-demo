@@ -17,8 +17,8 @@ setup:
 upgrade:
 	uv sync --upgrade --all-extras
 
-run:
-	uv run main.py
+start:
+	./dev_start.sh
 
 dev-compose:
 	docker compose up --build --remove-orphans

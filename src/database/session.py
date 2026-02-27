@@ -2,9 +2,8 @@ from typing import Annotated
 
 import structlog
 from fastapi import Depends
-from sqlalchemy.ext.asyncio import create_async_engine
-from sqlalchemy.orm import sessionmaker
-from sqlmodel.ext.asyncio.session import AsyncSession
+from sqlalchemy import create_engine
+from sqlalchemy.orm import Session, sessionmaker
 
 from src.settings import get_database_config
 
@@ -12,8 +11,7 @@ logger = structlog.get_logger(__name__)
 
 db_config = get_database_config()
 
-
-engine = create_async_engine(
+engine = create_engine(
     url=db_config["sqlalchemy.url"],
     echo=db_config["sqlalchemy.echo"],
     future=db_config["sqlalchemy.future"],
@@ -23,12 +21,17 @@ engine = create_async_engine(
     pool_timeout=db_config.get("sqlalchemy.pool_timeout", 30),
 )
 
+SessionLocal = sessionmaker(
+    bind=engine,
+    autocommit=False,
+    autoflush=False,
+    expire_on_commit=False,
+)
 
-async def get_session():
-    async with sessionmaker(
-        engine, class_=AsyncSession, expire_on_commit=False
-    )() as session:
+
+def get_session():
+    with SessionLocal() as session:
         yield session
 
 
-SessionDep = Annotated[AsyncSession, Depends(get_session)]
+SessionDep = Annotated[Session, Depends(get_session)]
