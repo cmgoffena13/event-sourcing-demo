@@ -20,7 +20,7 @@ services:
       - .env
     environment:
       - ENV_STATE=dev
-      - DEV_DATABASE_URL=postgresql+asyncpg://bank:bank@postgres:5432/bank
+      - DEV_DATABASE_URL=postgresql://bank:bank@postgres:5432/bank
     depends_on:
       - redis
       - postgres
