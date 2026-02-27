@@ -5,14 +5,14 @@ FROM ghcr.io/astral-sh/uv:${UV_VERSION}-python${PYTHON_VERSION}-bookworm-slim AS
 
 ENV UV_LINK_MODE=copy UV_COMPILE_BYTECODE=1 UV_PYTHON_CACHE_DIR=/root/.cache/uv/python
 
-WORKDIR /app
+WORKDIR /bank
 
 COPY pyproject.toml uv.lock ./
 
 RUN --mount=type=cache,target=/root/.cache/uv/python \
     uv sync --frozen --no-dev --no-install-project
 
-COPY . /app
+COPY . /bank
 RUN --mount=type=cache,target=/root/.cache/uv/python \
     uv sync --frozen --no-dev
 
@@ -21,12 +21,13 @@ FROM python:${PYTHON_VERSION}-slim-bookworm AS runtime
 RUN groupadd -r appgroup &&  \
     useradd -r -g appgroup appuser
 
-ENV PATH="/app/.venv/bin:$PATH" PYTHONUNBUFFERED=1
+ENV PATH="/bank/.venv/bin:$PATH" PYTHONUNBUFFERED=1
 
-WORKDIR /app
+WORKDIR /bank
 
-COPY --from=builder --chown=appuser:appgroup /app /app
+COPY --from=builder --chown=appuser:appgroup /bank /bank
 
 USER appuser
+
 EXPOSE 8000
-CMD ["gunicorn", "main:app", "-c", "gunicorn.conf.py"]
+CMD ["granian_run.sh"]

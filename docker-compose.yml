@@ -1,0 +1,30 @@
+services:
+  postgres:
+    image: postgres:18
+    container_name: watcher-postgres
+    environment:
+      POSTGRES_DB: bank
+      POSTGRES_USER: bank
+      POSTGRES_PASSWORD: bank
+    ports:
+      - "5432:5432"
+    volumes:
+      - bank_postgres_data:/var/lib/postgresql
+
+  api:
+    build: .
+    container_name: bank-api
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    environment:
+      - ENV_STATE=dev
+      - DEV_DATABASE_URL=postgresql+asyncpg://bank:bank@postgres:5432/bank
+    depends_on:
+      - redis
+      - postgres
+    volumes:
+      - ./src:/bank/src
+      - ./dev_start.sh:/bank/start.sh
+    command: ["/bin/bash", "/bank/start.sh"]
