@@ -1,0 +1,34 @@
+from typing import Annotated
+
+import structlog
+from fastapi import Depends
+from sqlalchemy.ext.asyncio import create_async_engine
+from sqlalchemy.orm import sessionmaker
+from sqlmodel.ext.asyncio.session import AsyncSession
+
+from src.settings import get_database_config
+
+logger = structlog.get_logger(__name__)
+
+db_config = get_database_config()
+
+
+engine = create_async_engine(
+    url=db_config["sqlalchemy.url"],
+    echo=db_config["sqlalchemy.echo"],
+    future=db_config["sqlalchemy.future"],
+    connect_args=db_config.get("sqlalchemy.connect_args", {}),
+    pool_size=db_config.get("sqlalchemy.pool_size", 20),
+    max_overflow=db_config.get("sqlalchemy.max_overflow", 10),
+    pool_timeout=db_config.get("sqlalchemy.pool_timeout", 30),
+)
+
+
+async def get_session():
+    async with sessionmaker(
+        engine, class_=AsyncSession, expire_on_commit=False
+    )() as session:
+        yield session
+
+
+SessionDep = Annotated[AsyncSession, Depends(get_session)]
