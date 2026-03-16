@@ -1,7 +1,7 @@
 services:
   postgres:
     image: postgres:18
-    container_name: watcher-postgres
+    container_name: bank-postgres
     environment:
       POSTGRES_DB: bank
       POSTGRES_USER: bank
@@ -22,9 +22,11 @@ services:
       - ENV_STATE=dev
       - DEV_DATABASE_URL=postgresql://bank:bank@postgres:5432/bank
     depends_on:
-      - redis
       - postgres
     volumes:
       - ./src:/bank/src
       - ./dev_start.sh:/bank/start.sh
     command: ["/bin/bash", "/bank/start.sh"]
+
+volumes:
+  bank_postgres_data:

@@ -20,6 +20,7 @@ async def lifespan(app: FastAPI):
     logger.info("Starting server...")
     os.environ["PERSISTENCE_MODULE"] = "eventsourcing_sqlalchemy"
     os.environ["SQLALCHEMY_URL"] = config.DATABASE_URL
+    os.environ["IS_SNAPSHOTTING_ENABLED"] = "y"
 
     yield
 

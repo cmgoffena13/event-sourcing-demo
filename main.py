@@ -3,8 +3,8 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from rich import panel
-
 from src.app.types import ORJSONResponse
+
 from src.logging_conf import setup_logging
 from src.settings import config
 

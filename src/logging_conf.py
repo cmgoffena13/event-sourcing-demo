@@ -101,7 +101,13 @@ def setup_logging():
             "level": config.LOG_LEVEL,
             "handlers": list(handlers.keys()),
             "propagate": False,
-        }
+        },
+        # Log all SQL from SQLAlchemy (app session + event-sourcing persistence)
+        "sqlalchemy.engine": {
+            "level": "DEBUG",
+            "handlers": list(handlers.keys()),
+            "propagate": False,
+        },
     }
 
     dictConfig(

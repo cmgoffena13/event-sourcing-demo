@@ -2,7 +2,7 @@
 set -e
 
 echo "Starting API server..."
-exec uv run -- granian \
+exec granian \
   --interface asgi \
   --host 0.0.0.0 \
   --port 8000 \

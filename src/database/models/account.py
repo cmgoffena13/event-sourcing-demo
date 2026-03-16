@@ -1,4 +1,5 @@
 from decimal import Decimal
+from uuid import UUID
 
 from eventsourcing.domain import Aggregate, event
 from pydantic import EmailStr
@@ -18,6 +19,18 @@ class Account(Aggregate):
     @event("Withdrawed")
     def withdraw(self, amount: Decimal) -> None:
         self.balance -= amount
+
+    @event("TransferOut")
+    def transfer_out(
+        self, amount: Decimal, to_account_id: UUID, transfer_id: UUID
+    ) -> None:
+        self.balance -= amount
+
+    @event("TransferIn")
+    def transfer_in(
+        self, amount: Decimal, from_account_id: UUID, transfer_id: UUID
+    ) -> None:
+        self.balance += amount
 
     @event("Closed")
     def close(self) -> None:
